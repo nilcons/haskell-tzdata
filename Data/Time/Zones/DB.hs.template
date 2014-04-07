@@ -1,0 +1,101 @@
+-- -*- haskell -*-
+{- |
+Module      : Data.Time.Zones.DB
+Copyright   : (C) 2014 Mihaly Barasz
+License     : Apache-2.0, see LICENSE
+Maintainer  : Mihaly Barasz <klao@nilcons.com>
+Stability   : experimental
+-}
+
+module Data.Time.Zones.DB (
+  toTZName,
+  fromTZName,
+  tzNameLabelMap,
+  tzDataByLabel,
+  tzDataByName,
+  TZLabel(..),
+  -- * Access to raw data
+  TZDescription,
+  tzDescriptions,
+  ) where
+
+import qualified Data.ByteString.Char8 as BS
+import qualified Data.ByteString.Lazy.Char8 as BL
+import qualified Data.Map.Lazy as M
+import qualified Data.Vector as V
+
+-- | Enumeration of time zone locations.
+data TZLabel
+  TZ_LABEL_DECL
+  deriving (Eq,Ord,Enum,Bounded,Show,Read)
+
+-- | Type of the elements of the compiled-in time zone info database.
+--
+-- @Right@ is a primary location;
+-- fields: name, label, content of the Time Zone info file
+--
+-- @Left@ is a location which is an alias for a primary location;
+-- fields: name, name of the target
+type TZDescription = Either (BS.ByteString, BS.ByteString) (BS.ByteString, TZLabel, BL.ByteString)
+
+-- | Convert a `TZLabel` to the usual name of the location.
+--
+-- >> toTZName Europe__Paris
+-- >"Europe/Paris"
+toTZName :: TZLabel -> BS.ByteString
+toTZName = (v V.!) . fromEnum
+  where
+    v = V.fromList $ go tzDescriptions
+    go [] = []
+    go (Right (name, _, _) : zs) = name : go zs
+    go (Left _ : zs) = go zs
+
+-- | Lookup the `TZLabel` by the name of the location.
+--
+-- Returns `Nothing` if the location is unknown.
+--
+-- >> :set -XOverloadedStrings
+-- >> fromTZName "Europe/Paris"
+-- >Just Europe__Paris
+-- >> fromTZName "Foo/Bar"
+-- >Nothing
+fromTZName :: BS.ByteString -> Maybe TZLabel
+fromTZName = flip M.lookup tzNameLabelMap
+
+-- | `M.Map` mapping know time zone locations to their canonical
+-- `TZLabel`s.
+tzNameLabelMap :: M.Map BS.ByteString TZLabel
+tzNameLabelMap = M.fromList $ map g tzDescriptions
+  where
+    g (Right (name,label,_)) = (name, label)
+    g (Left (name, target)) = (name, tzNameLabelMap M.! target)
+
+-- | Lookup time zone data by its label.
+tzDataByLabel :: TZLabel -> BL.ByteString
+tzDataByLabel = (v V.!) . fromEnum
+  where
+    v = V.fromList $ go tzDescriptions
+    go [] = []
+    go (Right (_, _, desc) : zs) = desc : go zs
+    go (Left _ : zs) = go zs
+
+-- | Lookup time zone data by the name of it's location.
+--
+-- Returns `Nothing` if the location is unknown.
+tzDataByName :: BS.ByteString -> Maybe BL.ByteString
+tzDataByName n = tzDataByLabel `fmap` fromTZName n
+
+-- | The list with raw data of the compiled-in time zone info database.
+--
+-- The list is sorted by name. (And the `Right` elements are
+-- guaranteed to be in the order of `TZLabel` constructors.)
+tzDescriptions :: [TZDescription]
+tzDescriptions = zones
+  where
+    {-# NOINLINE p #-}
+    p name label desc = Right (BS.pack name, label, BL.pack desc)
+    {-# NOINLINE l #-}
+    l name target = Left (BS.pack name, BS.pack target)
+    zones = [
+      TZ_DESCRIPTIONS
+      ]
