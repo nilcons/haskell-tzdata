@@ -76,6 +76,12 @@ genCode templatePath outputPath zones = do
            $ template
   writeFile outputPath code
 
+sumSize :: [TZDesc] -> Int
+sumSize = sum . map s
+  where
+    s (LinkD name target) = length name + length target
+    s (RegD name label desc) = length name + length label + fromIntegral (BL.length desc)
+
 main :: IO ()
 main = do
   args <- getArgs
@@ -83,6 +89,7 @@ main = do
     [dir, template, output] -> do
       zones0 <- collect dir
       zones <- sortBy (compare `on` _name) <$> mapM toDesc zones0
+      putStrLn $ "Approximate size of the data: " ++ show (sumSize zones)
       genCode template output zones
     _ -> do
       putStrLn "usage: getZones <zoneinfo-dir> <template> <output>"
