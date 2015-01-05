@@ -2,7 +2,7 @@
 
 set -e
 
-VER=2014e
+VER=2014j
 
 base=$(dirname $(readlink -f $0))
 cd $base
@@ -13,8 +13,8 @@ wget -c http://www.iana.org/time-zones/repository/releases/tzcode$VER.tar.gz
 
 echo Checking... >&2
 sha256sum -c /dev/stdin <<EOF
-43ebc426ab4911e222a4487f24289adfd2bc5eb09363a5e77cdabf56374a8c1c  tzcode$VER.tar.gz
-08e243a79051f838d86ac1311a78b74047951302d448024e823b5b7aa71f86c5  tzdata$VER.tar.gz
+7fd46125464856309fc81fe85a67a61de862b8ab884ce8ca82051f5fa308ede2  tzcode$VER.tar.gz
+a2d870320694d40535df822ac8074dc629a90e92abafa5d3373314f78ddc0e0d  tzdata$VER.tar.gz
 EOF
 
 echo Unpacking... >&2
