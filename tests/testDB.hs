@@ -28,7 +28,7 @@ case_Etc__GMT1_is_Etc__GMT1 = do
   readEtc @=? etcByName
 
 case_aliases :: IO ()
-case_aliases = do
+case_aliases =
   America__Argentina__Buenos_Aires @=? fromJust (fromTZName "America/Buenos_Aires")
 
 case_fromToName :: IO ()

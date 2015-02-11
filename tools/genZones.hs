@@ -72,8 +72,7 @@ genCode templatePath outputPath zones = do
   template <- readFile templatePath
   let
     code = replace "TZ_DESCRIPTIONS" (descriptionList zones)
-           $ replace "TZ_LABEL_DECL" (labelDecl zones)
-           $ template
+           $ replace "TZ_LABEL_DECL" (labelDecl zones) template
   writeFile outputPath code
 
 sumSize :: [TZDesc] -> Int
@@ -91,5 +90,4 @@ main = do
       zones <- sortBy (compare `on` _name) <$> mapM toDesc zones0
       putStrLn $ "Approximate size of the data: " ++ show (sumSize zones)
       genCode template output zones
-    _ -> do
-      putStrLn "usage: getZones <zoneinfo-dir> <template> <output>"
+    _ -> putStrLn "usage: getZones <zoneinfo-dir> <template> <output>"
