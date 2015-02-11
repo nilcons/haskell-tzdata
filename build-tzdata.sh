@@ -42,7 +42,6 @@ make TOPDIR=$base/tzdist/dest CFLAGS=-DHAVE_LINK=0 install
 zdir=$base/tzdist/dest/etc/zoneinfo
 # We don't want these:
 rm -f $zdir/* || true
-rm -rf $zdir/Etc
 
 echo Compiling the tool... >&2
 cd $base/tools

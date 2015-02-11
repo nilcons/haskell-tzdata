@@ -19,6 +19,14 @@ case_Budapest_is_Budapest = do
   let Just budByName = tzDataByName "Europe/Budapest"
   readBp @=? budByName
 
+case_Etc__GMT1_is_Etc__GMT1 :: IO ()
+case_Etc__GMT1_is_Etc__GMT1 = do
+  pathEtc <- timeZonePathFromDB "Etc/GMT+1"
+  readEtc <- BL.readFile pathEtc
+  readEtc @=? tzDataByLabel Etc__GMT1
+  let Just etcByName = tzDataByName "Etc/GMT+1"
+  readEtc @=? etcByName
+
 case_aliases :: IO ()
 case_aliases = do
   America__Argentina__Buenos_Aires @=? fromJust (fromTZName "America/Buenos_Aires")

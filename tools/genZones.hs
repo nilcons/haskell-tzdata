@@ -52,7 +52,7 @@ toDesc (Reg name file) = do
   return $ RegD name (nameToLabel name) desc
 
 nameToLabel :: String -> String
-nameToLabel = replace "-" "_" . replace "/" "__"
+nameToLabel = replace "-" "_" . replace "+" "" . replace "/" "__"
 
 labelDecl :: [TZDesc] -> String
 labelDecl zones = "= " ++ join "\n  | " (go zones)
