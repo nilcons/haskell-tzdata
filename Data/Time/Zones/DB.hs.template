@@ -24,6 +24,7 @@ import qualified Data.ByteString.Lazy.Char8 as BL
 import qualified Data.Map.Lazy as M
 import qualified Data.Vector as V
 
+{-# ANN module "HLint: ignore Use camelCase" #-}
 -- | Enumeration of time zone locations.
 data TZLabel
   TZ_LABEL_DECL
