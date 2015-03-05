@@ -39,9 +39,14 @@ echo Building symlinked zoneinfo for compilation... >&2
 cd $base/tzdist
 make clean
 make TOPDIR=$base/tzdist/dest CFLAGS=-DHAVE_LINK=0 install
-zdir=$base/tzdist/dest/etc/zoneinfo
+
+echo Cleaning up zoneinfo root directory... >&2
+cd $base/tzdist/dest/etc/zoneinfo
 # We don't want these:
-rm -f $zdir/* || true
+rm -f *.tab Factory posixrules localtime
+mkdir Root
+find . -maxdepth 1 -type f -exec mv '{}' Root \;
+for f in Root/*; do ln -s $f .; done
 
 echo Compiling the tool... >&2
 cd $base/tools
