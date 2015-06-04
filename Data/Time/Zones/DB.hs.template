@@ -7,6 +7,9 @@ Maintainer  : Mihaly Barasz <klao@nilcons.com>
 Stability   : experimental
 -}
 
+{-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE DeriveDataTypeable #-}
+
 module Data.Time.Zones.DB (
   toTZName,
   fromTZName,
@@ -19,16 +22,22 @@ module Data.Time.Zones.DB (
   tzDescriptions,
   ) where
 
+import           Control.DeepSeq (NFData, rnf)
 import qualified Data.ByteString.Char8 as BS
 import qualified Data.ByteString.Lazy.Char8 as BL
 import qualified Data.Map.Lazy as M
+import           Data.Data (Data, Typeable)
 import qualified Data.Vector as V
+import           GHC.Generics (Generic)
 
 {-# ANN module "HLint: ignore Use camelCase" #-}
 -- | Enumeration of time zone locations.
 data TZLabel
   TZ_LABEL_DECL
-  deriving (Eq,Ord,Enum,Bounded,Show,Read)
+  deriving (Eq,Ord,Enum,Bounded,Show,Read,Data,Typeable,Generic)
+
+instance NFData TZLabel where
+  rnf = (`seq` ())
 
 -- | Type of the elements of the compiled-in time zone info database.
 --
