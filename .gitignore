@@ -1,6 +1,7 @@
 /tzdist
 /tzdata
 /*.tar.gz
+/*.tar.gz.asc
 *~
 /dist
 cabal-dev

@@ -2,7 +2,7 @@
 
 set -e
 
-VER=2015a
+VER=2015f
 
 base=$(dirname $(readlink -f $0))
 cd $base
@@ -10,11 +10,15 @@ cd $base
 echo Downloading... >&2
 wget -c http://www.iana.org/time-zones/repository/releases/tzdata$VER.tar.gz
 wget -c http://www.iana.org/time-zones/repository/releases/tzcode$VER.tar.gz
+wget -c http://www.iana.org/time-zones/repository/releases/tzdata$VER.tar.gz.asc
+wget -c http://www.iana.org/time-zones/repository/releases/tzcode$VER.tar.gz.asc
 
 echo Checking... >&2
+gpg --verify tzdata$VER.tar.gz.asc
+gpg --verify tzcode$VER.tar.gz.asc
 sha512sum -c /dev/stdin <<EOF
-80d3bd3aeb70e21552a599c6203670fe742ca8d270c3fc430a3045d8e8a6610ebfe74941532c0791d5a99d6e4bf5fbdf62918de57d377d3fd26e7f7f786c66a4 tzcode$VER.tar.gz
-ff36feb437238ba42fe67257e81ade0a2179d11f6c6449146e28e4b6553c62348b4131af75e440b4467109c9edba13e25ddaf701f2fcebb2a258b4ac9b57293c tzdata$VER.tar.gz
+5cfbebde8a0be57e8388a7b6d35aeba99130a72c1a41f9bbd5d5864511a473aa5e9320ab21055b4383e64b3b9d7682c0d30377ce8407619987be672436014710  tzcode$VER.tar.gz
+d86e6c9e4c6d9cd5de30762723d7a90ac697feeb6dd1f04649f6a35e4e1dc638261c32066db4aeafa767ac339ccd100c38dde044ceadd61e95cb3d39c27f977e  tzdata$VER.tar.gz
 EOF
 
 echo Unpacking... >&2
