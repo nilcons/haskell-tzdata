@@ -1,0 +1,21 @@
+Name:                tzdata-tools
+Version:             0.1.0.0
+license:             Apache-2.0
+license-file:        LICENSE
+author:              Mihaly Barasz
+maintainer:          klao@nilcons.com
+build-type:          Simple
+cabal-version:       >=1.10
+Synopsis:            Tool to build Data.Time.Zones.DB.hs from template
+
+Executable genZones
+  Main-Is: genZones.hs
+  Default-Language: Haskell2010
+  GHC-Options: -Wall
+  Build-Depends:
+    base,
+    bytestring,
+    directory,
+    filemanip,
+    filepath,
+    MissingH

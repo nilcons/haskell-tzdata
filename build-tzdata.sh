@@ -53,9 +53,9 @@ find . -maxdepth 1 -type f -exec mv '{}' Root \;
 for f in Root/*; do ln -s $f .; done
 
 echo Compiling the tool... >&2
-cd $base/tools
-ghc -Wall -O --make -XHaskell2010 genZones
+cd $base
+stack build tools/
 
 echo Creating DB.hs... >&2
 cd $base
-./tools/genZones tzdist/dest/etc/zoneinfo/ Data/Time/Zones/DB.hs.template Data/Time/Zones/DB.hs
+stack exec genZones tzdist/dest/etc/zoneinfo/ Data/Time/Zones/DB.hs.template Data/Time/Zones/DB.hs

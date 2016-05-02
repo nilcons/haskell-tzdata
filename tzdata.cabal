@@ -70,17 +70,3 @@ Test-Suite test-db
     test-framework-hunit       >= 0.2     && < 0.4,
     test-framework-th          >= 0.2     && < 0.4,
     unix                       >= 2.6     && < 3
-
-Test-Suite dummy-genZones
-  Default-Language: Haskell2010
-  Type: exitcode-stdio-1.0
-  HS-Source-Dirs: tools
-  Main-Is: genZones.hs
-  GHC-Options: -Wall
-  Build-Depends:
-    base,
-    bytestring,
-    directory,
-    filemanip,
-    filepath,
-    MissingH
