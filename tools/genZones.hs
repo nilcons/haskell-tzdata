@@ -10,6 +10,9 @@ import System.FilePath.Find
 import System.Environment
 import System.IO.Unsafe
 
+-- Suppress 'reduntant import' warning:
+import Prelude
+
 data TZFile
   = Reg String FilePath
   | Link String String
@@ -90,4 +93,4 @@ main = do
       zones <- sortBy (compare `on` _name) <$> mapM toDesc zones0
       putStrLn $ "Approximate size of the data: " ++ show (sumSize zones)
       genCode template output zones
-    _ -> putStrLn "usage: getZones <zoneinfo-dir> <template> <output>"
+    _ -> putStrLn "usage: genZones <zoneinfo-dir> <template> <output>"
