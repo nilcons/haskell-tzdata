@@ -7,8 +7,13 @@ Maintainer  : Mihaly Barasz <klao@nilcons.com>
 Stability   : experimental
 -}
 
+{-# LANGUAGE DataKinds #-}
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE DeriveDataTypeable #-}
+{-# LANGUAGE ExistentialQuantification #-}
+{-# LANGUAGE KindSignatures #-}
+{-# LANGUAGE LambdaCase #-}
+{-# LANGUAGE StandaloneDeriving #-}
 
 module Data.Time.Zones.DB (
   toTZName,
@@ -20,12 +25,18 @@ module Data.Time.Zones.DB (
   -- * Access to raw data
   TZDescription,
   tzDescriptions,
+  -- * Type-level time zone labels
+  KnownTZLabel(..),
+  SomeTZLabel(..),
+  someTZLabelVal,
+  promoteTZLabel,
   ) where
 
 import           Control.DeepSeq (NFData, rnf)
 import qualified Data.ByteString.Char8 as BS
 import qualified Data.ByteString.Lazy.Char8 as BL
 import qualified Data.Map.Lazy as M
+import           Data.Proxy (Proxy(..))
 import           Data.Data (Data, Typeable)
 import qualified Data.Vector as V
 import           GHC.Generics (Generic)
@@ -109,3 +120,37 @@ tzDescriptions = zones
     zones = [
       TZ_DESCRIPTIONS
       ]
+
+-- | This class gives the value associated with a type-level time zone label.
+--
+-- >> :set -XDataKinds
+-- >> :module + Data.Proxy
+-- >> tzLabelVal (Proxy :: Proxy 'America__New_York)
+-- >America__New_York
+class KnownTZLabel (label :: TZLabel) where
+  tzLabelVal :: Proxy label -> TZLabel
+
+TZ_INSTANCES
+
+-- | This type represents an unknown type-level time zone label.
+data SomeTZLabel = forall label . KnownTZLabel label => SomeTZLabel (Proxy label)
+
+instance Eq SomeTZLabel where
+  SomeTZLabel proxy == SomeTZLabel proxy' = tzLabelVal proxy == tzLabelVal proxy'
+
+deriving instance Show SomeTZLabel
+
+-- | Convert a value into an unknown type-level time zone label.
+--
+-- >> someTZLabelVal America__New_York
+-- >SomeTZLabel Proxy
+someTZLabelVal :: TZLabel -> SomeTZLabel
+someTZLabelVal = \ case
+  TZ_CASES
+
+-- | Promote a time zone label value to the type-level.
+--
+-- >> case someTZLabelVal America__New_York of SomeTZLabel proxy -> promoteTZLabel proxy SomeTZLabel
+-- >SomeTZLabel Proxy
+promoteTZLabel :: forall proxy label a . KnownTZLabel label => proxy label -> (Proxy label -> a) -> a
+promoteTZLabel _ f = f Proxy

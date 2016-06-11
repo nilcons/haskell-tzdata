@@ -37,6 +37,13 @@ case_fromToName = forM_ [minBound .. maxBound] t
     t :: TZLabel -> IO ()
     t label = Just label @=? fromTZName (toTZName label)
 
+case_promoteTZLabel :: IO ()
+case_promoteTZLabel = forM_ [minBound .. maxBound] t
+  where
+    t :: TZLabel -> IO ()
+    t label = someTZLabel @=? case someTZLabel of SomeTZLabel proxy -> promoteTZLabel proxy SomeTZLabel
+      where someTZLabel = someTZLabelVal label
+
 main :: IO ()
 main = do
   -- When we are running 'cabal test' the package is not yet
