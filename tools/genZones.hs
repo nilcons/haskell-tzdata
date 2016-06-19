@@ -57,26 +57,39 @@ toDesc (Reg name file) = do
 nameToLabel :: String -> String
 nameToLabel = replace "-" "_" . replace "+" "" . replace "/" "__"
 
-labelDecl :: [TZDesc] -> String
-labelDecl zones = "= " ++ join "\n  | " (go zones)
+mkSomeTZLabelCases :: [String] -> String
+mkSomeTZLabelCases = join "\n  " . map f
   where
-    go [] = []
-    go (RegD _ label _ : zs) = label : go zs
-    go (LinkD _ _ : zs) = go zs
+    f label = label ++ " -> SomeTZLabel (Proxy :: Proxy '" ++ label ++ ")"
 
-descriptionList :: [TZDesc] -> String
-descriptionList = join ",\n      " . map f
+mkKnownTZLabelInstances :: [String] -> String
+mkKnownTZLabelInstances = join "\n\n" . map f
+  where
+    f label = "instance KnownTZLabel '" ++ label ++ " where\n  tzLabelVal _ = " ++ label
+
+mkTZDescriptions :: [TZDesc] -> String
+mkTZDescriptions = join ",\n      " . map f
   where
     f (LinkD name target) = "l " ++ show name ++ " " ++ show target
     f (RegD name label desc) = "p " ++ show name ++ " " ++ label ++ " " ++ show (BL.unpack desc)
+
+mkTZLabelConstructors :: [String] -> String
+mkTZLabelConstructors = (++) "= " . join "\n  | "
 
 genCode :: FilePath -> FilePath -> [TZDesc] -> IO ()
 genCode templatePath outputPath zones = do
   template <- readFile templatePath
   let
-    code = replace "TZ_DESCRIPTIONS" (descriptionList zones)
-           $ replace "TZ_LABEL_DECL" (labelDecl zones) template
+    code = replace "TZ_CASES" (mkSomeTZLabelCases labels)
+         $ replace "TZ_INSTANCES" (mkKnownTZLabelInstances labels)
+         $ replace "TZ_DESCRIPTIONS" (mkTZDescriptions zones)
+         $ replace "TZ_LABEL_DECL" (mkTZLabelConstructors labels) template
   writeFile outputPath code
+  where
+    labels = go zones
+    go [] = []
+    go (RegD _ label _ : zs) = label : go zs
+    go (LinkD _ _ : zs) = go zs
 
 sumSize :: [TZDesc] -> Int
 sumSize = sum . map s
