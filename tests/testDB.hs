@@ -37,6 +37,12 @@ case_fromToName = forM_ [minBound .. maxBound] t
     t :: TZLabel -> IO ()
     t label = Just label @=? fromTZName (toTZName label)
 
+case_fromToSomeTZLabel :: IO ()
+case_fromToSomeTZLabel = forM_ [minBound .. maxBound] t
+  where
+    t :: TZLabel -> IO ()
+    t label = label @=? case someTZLabelVal label of SomeTZLabel proxy -> tzLabelVal proxy
+
 case_promoteTZLabel :: IO ()
 case_promoteTZLabel = forM_ [minBound .. maxBound] t
   where
