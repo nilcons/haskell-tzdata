@@ -10,9 +10,10 @@ Stability   : experimental
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE DeriveDataTypeable #-}
-{-# LANGUAGE ExistentialQuantification #-}
+{-# LANGUAGE GADTs #-}
 {-# LANGUAGE KindSignatures #-}
 {-# LANGUAGE LambdaCase #-}
+{-# LANGUAGE RankNTypes #-}
 {-# LANGUAGE StandaloneDeriving #-}
 
 module Data.Time.Zones.DB (
@@ -133,7 +134,8 @@ class KnownTZLabel (label :: TZLabel) where
 TZ_INSTANCES
 
 -- | This type represents an unknown type-level time zone label.
-data SomeTZLabel = forall label . KnownTZLabel label => SomeTZLabel (Proxy label)
+data SomeTZLabel where
+  SomeTZLabel :: KnownTZLabel label => Proxy label -> SomeTZLabel
 
 instance Eq SomeTZLabel where
   SomeTZLabel proxy == SomeTZLabel proxy' = tzLabelVal proxy == tzLabelVal proxy'
