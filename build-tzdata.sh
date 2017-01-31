@@ -2,7 +2,7 @@
 
 set -e
 
-VER=2016e
+VER=2016j
 
 base=$(dirname $(readlink -f $0))
 cd $base
@@ -17,8 +17,8 @@ echo Checking... >&2
 gpg --verify tzdata$VER.tar.gz.asc
 gpg --verify tzcode$VER.tar.gz.asc
 sha512sum -c /dev/stdin <<EOF
-dcaf615ada96920e60ffb336253f53541861153decc156d41661f43e0bfb128c6c231b0b776bbe3f2176549346275fc5a879074f4977d5141228e58cb33a41c6  tzcode$VER.tar.gz
-dace0f6fc87a73879ca3a1b143d7dcf9c50803e23e6b8c91f83711704e28129af776676c547c42f14dee7f1e8e285ce25296e53a52d11f4c8f155b5f80f4beb3  tzdata$VER.tar.gz
+cac19dded22ff80cd784641ac239358c28cce535ac1eb60b52b7e51c6e9e5fe5f795ea0252daf32c949dddb9c5b24d7e4456d7869aa2725d49c5af58b564822a  tzcode$VER.tar.gz
+ce0b9958b764479fac7df6b5ba0933fc4c6d815ebccc2537c75c4be105691cd58054704eebfb50ca755d7d48504480d4925ce8836eb499ae4798e3d5503d7e0e  tzdata$VER.tar.gz
 EOF
 
 echo Unpacking... >&2
@@ -27,6 +27,9 @@ mkdir tzdist
 cd tzdist
 tar xzf ../tzcode$VER.tar.gz
 tar xzf ../tzdata$VER.tar.gz
+
+echo Patching... >&2
+patch -p1 < $base/tzcode.patch
 
 echo Building... >&2
 make TOPDIR=$base/tzdist/dest install

@@ -1,0 +1,11 @@
+diff -ur tzdist.orig/zic.c tzdist/zic.c
+--- tzdist.orig/zic.c	2016-11-04 17:59:51.000000000 +0100
++++ tzdist/zic.c	2017-01-31 20:43:25.512986988 +0100
+@@ -116,6 +116,7 @@
+ 
+ #if ! HAVE_LINK
+ # define link(from, to) (errno = ENOTSUP, -1)
++# define linkat(fromdir, from, todir, to, flag) (errno = ENOTSUP, -1)
+ #endif
+ #if ! HAVE_SYMLINK
+ # define readlink(file, buf, size) (errno = ENOTSUP, -1)
