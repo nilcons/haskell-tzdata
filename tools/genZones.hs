@@ -8,9 +8,8 @@ import Data.String.Utils (replace, join)
 import System.Directory
 import System.FilePath.Find
 import System.Environment
-import System.IO.Unsafe
 
--- Suppress 'reduntant import' warning:
+-- Suppress 'redundant import' warning:
 import Prelude
 
 data TZFile
@@ -22,11 +21,6 @@ data TZDesc
   = RegD { _name :: String, _label :: String, _desc :: BL.ByteString }
   | LinkD { _name :: String, _target :: String }
   deriving (Eq,Show)
-
--- TODO(klao): remove when/if https://github.com/bos/filemanip/pull/4
--- is merged and released.
-canonicalPath' :: FindClause FilePath
-canonicalPath' = (unsafePerformIO . canonicalizePath) `liftM` filePath
 
 collect :: FilePath -> IO [TZFile]
 collect dir0 = do
@@ -41,7 +35,7 @@ collect dir0 = do
       case ftype of
         RegularFile -> return $ Reg name fp : l
         SymbolicLink -> do
-          target <- canonicalPath'
+          target <- canonicalPath
           return $ Link name (relname target) : l
         _ -> return l
 
