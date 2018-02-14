@@ -2,7 +2,7 @@
 
 set -e
 
-VER=2017b
+VER=2018c
 
 base=$(dirname $(readlink -f $0))
 cd $base
@@ -17,8 +17,8 @@ echo Checking... >&2
 gpg --verify tzdata$VER.tar.gz.asc
 gpg --verify tzcode$VER.tar.gz.asc
 sha512sum -c /dev/stdin <<EOF
-9a73af4b868506d1f6287a8285dea489e68f6828da19509114f9144e2a2019c7fd28f4fb98ea907030d11d011ce3a87d99dbe43bca218beddafff151f0d61df1  tzcode$VER.tar.gz
-3e090dba1f52e4c63b4930b28f4bf38b56aabd6728f23094cb5801d10f4e464f17231f17b75b8866714bf98199c166ea840de0787b75b2274aa419a4e14bbc4d  tzdata$VER.tar.gz
+21988e876479e38661d41ea4c7b5218ba14b979739d7ba8d49a2d343bb9f37c654056ab21c046a6652715f012e4ca33c4aa109b1ec3ac5d0244dd3a7ea9ed6d2  tzcode$VER.tar.gz
+0575c87c9ffcde7b7f62b0df928d8a0e8d93f832b5ef7227b3d8431686f851f1fd5372c7e768f2979830352433b31df7f3979a00c28ea3973a3a0987ebbfb835  tzdata$VER.tar.gz
 EOF
 
 echo Unpacking... >&2
@@ -37,10 +37,9 @@ make TOPDIR=$base/tzdist/dest install
 echo Renaming... >&2
 cd $base
 rm -rf tzdata
-mv tzdist/dest/etc/zoneinfo tzdata
+mv tzdist/dest/usr/share/zoneinfo tzdata
 cd tzdata
 find . -type f -name '[A-Z]*' -exec mv '{}' '{}.zone' \;
-rm localtime posixrules
 
 echo Building symlinked zoneinfo for compilation... >&2
 cd $base/tzdist
@@ -48,9 +47,9 @@ make clean
 make TOPDIR=$base/tzdist/dest CFLAGS=-DHAVE_LINK=0 install
 
 echo Cleaning up zoneinfo root directory... >&2
-cd $base/tzdist/dest/etc/zoneinfo
+cd $base/tzdist/dest/usr/share/zoneinfo
 # We don't want these:
-rm -f *.tab Factory posixrules localtime
+rm -f *.tab Factory posixrules localtime leapseconds tzdata.zi
 mkdir Root
 find . -maxdepth 1 -type f -exec mv '{}' Root \;
 for f in Root/*; do ln -s $f .; done
@@ -61,4 +60,4 @@ stack build tools/
 
 echo Creating DB.hs... >&2
 cd $base
-stack exec genZones tzdist/dest/etc/zoneinfo/ Data/Time/Zones/DB.hs.template Data/Time/Zones/DB.hs
+stack exec genZones tzdist/dest/usr/share/zoneinfo/ Data/Time/Zones/DB.hs.template Data/Time/Zones/DB.hs
