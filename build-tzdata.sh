@@ -57,10 +57,20 @@ mkdir Root
 find . -maxdepth 1 -type f -exec mv '{}' Root \;
 for f in Root/*; do ln -s $f .; done
 
-echo Compiling the tool... >&2
-cd $base
-stack build tools/
+if [ "x$USE_CABAL" = "xYES" ]; then
+  echo Compiling the tool... >&2
+  cd $base
+  cabal new-build genZones
 
-echo Creating DB.hs... >&2
-cd $base
-stack exec genZones tzdist/dest/usr/share/zoneinfo/ Data/Time/Zones/DB.hs.template Data/Time/Zones/DB.hs
+  echo Creating DB.hs... >&2
+  cd $base
+  cabal new-run genZones -- tzdist/dest/usr/share/zoneinfo/ Data/Time/Zones/DB.hs.template Data/Time/Zones/DB.hs
+else
+  echo Compiling the tool... >&2
+  cd $base
+  stack build tools/
+
+  echo Creating DB.hs... >&2
+  cd $base
+  stack exec genZones tzdist/dest/usr/share/zoneinfo/ Data/Time/Zones/DB.hs.template Data/Time/Zones/DB.hs
+fi
