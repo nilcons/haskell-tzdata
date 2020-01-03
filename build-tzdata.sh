@@ -2,7 +2,7 @@
 
 set -e
 
-VER=2019a
+VER=2019c
 
 base=$(dirname $(readlink -f $0))
 cd $base
@@ -20,8 +20,8 @@ gpg --verify tzcode$VER.tar.gz.asc
 sha512sum tzcode$VER.tar.gz tzdata$VER.tar.gz
 
 sha512sum -c /dev/stdin <<EOF
-7cc76ce6be4a67c3e1b2222cb632d2de9dabb76899793a938f87a1d4bb20e462cabdae9e3b986aaabaa400795370510095d236dbad5aff4c192d0887f0ecedf5  tzcode$VER.tar.gz
-d8eb5b2b68abee08bd2b0d2134bce85b5c0aee85168e9697a607604ed5be7d1539ac60fda9b37e0c9c793ef6251978bc250563a0af59497fde775499964bb5aa  tzdata$VER.tar.gz
+61ef36385f501c338c263081486de0d1fccd454b86f8777b0dbad4ea3f21bbde059d0a91c23e207b167ed013127d3db8b7528f0188814a8b44d1f946b19d9b8b  tzcode$VER.tar.gz
+2921cbb2fd44a6b8f7f2ed42c13fbae28195aa5c2eeefa70396bc97cdbaad679c6cc3c143da82cca5b0279065c02389e9af536904288c12886bf345baa8c6565  tzdata$VER.tar.gz
 EOF
 
 echo Unpacking... >&2
