@@ -55,6 +55,10 @@ Library
     deepseq            >= 1.1      && < 1.5,
     vector             >= 0.9      && < 0.13
 
+  if !impl(ghc >= 7.8)
+    build-depends: tagged >=0.8.6 && <0.9
+  other-extensions: LambdaCase
+
 Test-Suite test-db
   Default-Language: Haskell2010
   Type: exitcode-stdio-1.0
