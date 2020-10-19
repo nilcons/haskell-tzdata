@@ -2,6 +2,7 @@
 /tzdata
 /*.tar.gz
 /*.tar.gz.asc
+/stack.yaml.lock
 *~
 dist/
 .stack-work/
