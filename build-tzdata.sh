@@ -9,8 +9,8 @@ cd $base
 
 echo Downloading... >&2
 download() {
-  if [ ! -e $(basename $1) ]; then
-    wget -c "$1"
+  if [ ! -e $(basename "$1") ]; then
+    wget "$1"
   fi
 }
 
@@ -47,8 +47,11 @@ mv tzdist/dest/usr/share/zoneinfo tzdata
 cd tzdata
 find . -type f -name '[A-Z]*' -exec mv '{}' '{}.zone' \;
 
-echo Building symlinked zoneinfo for compilation... >&2
+echo Patching for symlinked compilation... >&2
 cd $base/tzdist
+patch -p1 < $base/tzcode.patch
+
+echo Building symlinked zoneinfo for compilation... >&2
 make clean
 make TOPDIR=$base/tzdist/dest CFLAGS=-DHAVE_LINK=0 install
 

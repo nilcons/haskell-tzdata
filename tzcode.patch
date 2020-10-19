@@ -1,0 +1,10 @@
+--- tzdist.orig/zic.c	2020-10-04 00:11:18.000000000 +0200
++++ tzdist/zic.c	2020-10-19 19:07:35.741300891 +0200
+@@ -139,6 +139,7 @@
+ 
+ #if ! HAVE_LINK
+ # define link(target, linkname) (errno = ENOTSUP, -1)
++# define linkat(fromdir, from, todir, to, flag) (errno = ENOTSUP, -1)
+ #endif
+ #if ! HAVE_SYMLINK
+ # define readlink(file, buf, size) (errno = ENOTSUP, -1)
