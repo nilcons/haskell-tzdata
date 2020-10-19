@@ -49,7 +49,7 @@ toDesc (Reg name file) = do
   return $ RegD name (nameToLabel name) desc
 
 nameToLabel :: String -> String
-nameToLabel = replace "-" "_" . replace "+" "" . replace "/" "__"
+nameToLabel = replace "-" "_" . replace "+" "'" . replace "/" "__"
 
 mkSomeTZLabelCases :: [String] -> String
 mkSomeTZLabelCases = join "\n  " . map f

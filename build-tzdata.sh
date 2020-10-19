@@ -2,16 +2,22 @@
 
 set -e
 
-VER=2019c
+VER=2020c
 
 base=$(dirname $(readlink -f $0))
 cd $base
 
 echo Downloading... >&2
-wget -c http://www.iana.org/time-zones/repository/releases/tzdata$VER.tar.gz
-wget -c http://www.iana.org/time-zones/repository/releases/tzcode$VER.tar.gz
-wget -c http://www.iana.org/time-zones/repository/releases/tzdata$VER.tar.gz.asc
-wget -c http://www.iana.org/time-zones/repository/releases/tzcode$VER.tar.gz.asc
+download() {
+  if [ ! -e $(basename $1) ]; then
+    wget -c "$1"
+  fi
+}
+
+download http://www.iana.org/time-zones/repository/releases/tzdata$VER.tar.gz
+download http://www.iana.org/time-zones/repository/releases/tzcode$VER.tar.gz
+download http://www.iana.org/time-zones/repository/releases/tzdata$VER.tar.gz.asc
+download http://www.iana.org/time-zones/repository/releases/tzcode$VER.tar.gz.asc
 
 echo Checking... >&2
 gpg --verify tzdata$VER.tar.gz.asc
@@ -20,8 +26,8 @@ gpg --verify tzcode$VER.tar.gz.asc
 sha512sum tzcode$VER.tar.gz tzdata$VER.tar.gz
 
 sha512sum -c /dev/stdin <<EOF
-61ef36385f501c338c263081486de0d1fccd454b86f8777b0dbad4ea3f21bbde059d0a91c23e207b167ed013127d3db8b7528f0188814a8b44d1f946b19d9b8b  tzcode$VER.tar.gz
-2921cbb2fd44a6b8f7f2ed42c13fbae28195aa5c2eeefa70396bc97cdbaad679c6cc3c143da82cca5b0279065c02389e9af536904288c12886bf345baa8c6565  tzdata$VER.tar.gz
+c77fa69d2a005ba7cff602b2267983fd01613f81385bc13c90b9581d69fb0ac73491641cac81e0e5d7dd00ed120c45103859902c2d10da9d25c98b33354f88f7  tzcode$VER.tar.gz
+bbd66fe236ba0949261cb238bfed454c03b4500b239dc38f1b8fef8d229136f5964c1a8386fe54484e4e5e34a3c28a7b66ee7374ff7e0dd07865d78fc53bf96c  tzdata$VER.tar.gz
 EOF
 
 echo Unpacking... >&2
@@ -30,9 +36,6 @@ mkdir tzdist
 cd tzdist
 tar xzf ../tzcode$VER.tar.gz
 tar xzf ../tzdata$VER.tar.gz
-
-echo Patching... >&2
-patch -p1 < $base/tzcode.patch
 
 echo Building... >&2
 make TOPDIR=$base/tzdist/dest install
