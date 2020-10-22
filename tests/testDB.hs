@@ -8,7 +8,7 @@ import Data.Time.Zones.DB
 import Data.Time.Zones.Files
 import Test.Framework.Providers.HUnit
 import Test.Framework.TH
-import Test.HUnit hiding (Test, assert)
+import Test.HUnit hiding (Test)
 import System.Posix.Env
 
 case_Budapest_is_Budapest :: IO ()
@@ -49,6 +49,10 @@ case_promoteTZLabel = forM_ [minBound .. maxBound] t
     t :: TZLabel -> IO ()
     t label = someTZLabel @=? case someTZLabel of SomeTZLabel proxy -> promoteTZLabel proxy SomeTZLabel
       where someTZLabel = someTZLabelVal label
+
+case_data_is_fat :: IO ()
+case_data_is_fat = do
+  assert $ BL.length (tzDataByLabel Europe__Budapest) > 2000
 
 main :: IO ()
 main = do

@@ -38,7 +38,7 @@ tar xzf ../tzcode$VER.tar.gz
 tar xzf ../tzdata$VER.tar.gz
 
 echo Building... >&2
-make TOPDIR=$base/tzdist/dest install
+make TOPDIR=$base/tzdist/dest ZFLAGS='-b fat' install
 
 echo Renaming... >&2
 cd $base
@@ -53,7 +53,7 @@ patch -p1 < $base/tzcode.patch
 
 echo Building symlinked zoneinfo for compilation... >&2
 make clean
-make TOPDIR=$base/tzdist/dest CFLAGS=-DHAVE_LINK=0 install
+make TOPDIR=$base/tzdist/dest  ZFLAGS='-b fat' CFLAGS=-DHAVE_LINK=0 install
 
 echo Cleaning up zoneinfo root directory... >&2
 cd $base/tzdist/dest/usr/share/zoneinfo
