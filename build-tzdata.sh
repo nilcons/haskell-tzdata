@@ -53,7 +53,7 @@ patch -p1 < $base/tzcode.patch
 
 echo Building symlinked zoneinfo for compilation... >&2
 make clean
-make TOPDIR=$base/tzdist/dest  ZFLAGS='-b fat' CFLAGS=-DHAVE_LINK=0 install
+make TOPDIR=$base/tzdist/dest ZFLAGS='-b fat' CFLAGS=-DHAVE_LINK=0 install
 
 echo Cleaning up zoneinfo root directory... >&2
 cd $base/tzdist/dest/usr/share/zoneinfo

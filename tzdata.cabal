@@ -23,7 +23,7 @@ Description:
   .
   This version contains the "fat" variant of the time zone files (which is not
   the default for the upstream since @2020b@) to facilitate the transition. The
-  next minor version (@0.3@) will ship the "slim" variant.
+  next major version (@0.3@) will ship the "slim" variant.
   .
   See: <http://www.iana.org/time-zones> for more info about the time
   zone database.
