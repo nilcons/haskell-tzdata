@@ -3,14 +3,35 @@ import Control.Monad hiding (join)
 import qualified Data.ByteString.Lazy.Char8 as BL
 import Data.Function (on)
 import Data.List
+import Data.List.Split (splitOn)
 import Data.Maybe
-import Data.String.Utils (replace, join)
 import System.Directory
 import System.FilePath.Find
 import System.Environment
 
 -- Suppress 'redundant import' warning:
 import Prelude
+
+-- The following list functions were copied from MissingH, written by John Goerzen.
+-- The library is unmaintained, see https://github.com/haskell-hvr/missingh/issues/54
+-- It is BSD-3-Clause licensed.
+-- They were modified to use 'splitOn' from the 'split' package.
+
+{- | Given a list and a replacement list, replaces each occurance of the search
+list with the replacement list in the operation list.
+Example:
+>replace "," "." "127,0,0,1" -> "127.0.0.1"
+-}
+replace :: Eq a => [a] -> [a] -> [a] -> [a]
+replace old new = join new . splitOn old
+
+{- | Given a delimiter and a list of items (or strings), join the items
+by using the delimiter.
+Example:
+> join "|" ["foo", "bar", "baz"] -> "foo|bar|baz"
+-}
+join :: [a] -> [[a]] -> [a]
+join delim = concat . intersperse delim
 
 data TZFile
   = Reg String FilePath
