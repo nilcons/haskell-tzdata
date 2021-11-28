@@ -6,9 +6,8 @@ import qualified Data.ByteString.Lazy.Char8 as BL
 import Data.Maybe
 import Data.Time.Zones.DB
 import Data.Time.Zones.Files
-import Test.Framework.Providers.HUnit
-import Test.Framework.TH
-import Test.HUnit hiding (Test)
+import Test.Tasty.HUnit
+import Test.Tasty.TH
 import System.Posix.Env
 
 case_Budapest_is_Budapest :: IO ()
