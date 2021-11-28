@@ -1,10 +1,10 @@
+Cabal-Version: 2.4
 Name: tzdata
 Version: 0.2.20201021.0
 License: Apache-2.0
 License-File: LICENSE
 Author: Mihaly Barasz, Gergely Risko
 Maintainer: Mihaly Barasz <klao@nilcons.com>, Gergely Risko <errge@nilcons.com>
-Cabal-Version: >= 1.10
 Build-Type: Simple
 Category: Data
 Stability: experimental
@@ -34,8 +34,7 @@ Description:
   automatically installs this package.)
 
 Data-Dir: tzdata
--- We have to explicitly list all the directories because of Cabal's limitations.
-Data-Files: *.tab *.zone Chile/*.zone Etc/*.zone Canada/*.zone Indian/*.zone Africa/*.zone Asia/*.zone Antarctica/*.zone Europe/*.zone America/*.zone America/Kentucky/*.zone America/North_Dakota/*.zone America/Argentina/*.zone America/Indiana/*.zone Mexico/*.zone Brazil/*.zone Atlantic/*.zone Arctic/*.zone Australia/*.zone Pacific/*.zone US/*.zone
+Data-Files: *.tab **/*.zone
 
 Extra-Source-Files:
   README.md
